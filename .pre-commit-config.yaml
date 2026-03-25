@@ -1,0 +1,76 @@
+# pre-commit configuration reference - https://github.com/pre-commit/pre-commit-hooks/blob/main/README.md
+# Black formatter reference - https://github.com/psf/black/blob/main/docs/integrations/source_version_control.md
+# isort pre-commit hooks reference - https://pycqa.github.io/isort/docs/configuration/pre-commit.html
+# isort black compatibility configuration reference - https://pycqa.github.io/isort/docs/configuration/black_compatibility.html
+# Flake8 pre-commit hooks reference - https://flake8.pycqa.org/en/latest/user/using-hooks.html#usage-with-the-pre-commit-git-hooks-framework
+# Flake8 options reference - https://flake8.pycqa.org/en/latest/user/options.html
+# mypy reference - https://github.com/pre-commit/mirrors-mypy/blob/main/README.md
+# pyupgrade reference - https://github.com/asottile/pyupgrade/blob/main/README.md
+
+default_language_version:
+  python: python3.11
+fail_fast: true
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: no-commit-to-branch
+        args: ["--branch", "prod", "--branch", "master", "--branch", "test", "--branch", "dev"]
+      - id: check-added-large-files
+      - id: check-ast
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+      - id: requirements-txt-fixer
+  # Using this mirror lets us use mypyc-compiled black, which is about 2x faster
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 25.1.0
+    hooks:
+      - id: black
+        args: [--line-length=120]
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        args:
+          [
+            "--profile",
+            "black",
+            "--force-sort-within-sections",
+            "--force-alphabetical-sort",
+            "--force-alphabetical-sort-within-sections",
+            "--known-local-folder=panda,workbench,shared,users",
+            "--ext=py",
+          ]
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.2.0
+    hooks:
+      - id: flake8
+        args:
+          - "--max-line-length=120"
+          - "--max-complexity=15"
+          - "--ignore=E203,S101,S301,S403,W503,B008"
+          # Reason to ignore E203:
+          # https://github.com/psf/black/issues/315
+          # Reason to ignore S101:
+          # https://stackoverflow.com/questions/68428293/s101-use-of-assert-detected-for-python-tests
+        additional_dependencies:
+          - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-simplify
+          - flake8-bandit
+  # - repo: local
+  #   hooks:
+  #     - id: mypy
+  #       name: mypy
+  #       entry: bash -c 'CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACMRT "*.py") && if [ -n "$CHANGED_FILES" ]; then mypy --show-traceback --ignore-missing-imports --follow-imports=skip --no-incremental --namespace-packages --explicit-package-bases $CHANGED_FILES; fi'
+  #       types: [python]
+  #       language: system
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.20.0
+    hooks:
+      - id: pyupgrade
+        args:
+          - "--keep-percent-format"
+          - "--py311-plus"
