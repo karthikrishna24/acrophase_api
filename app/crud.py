@@ -30,12 +30,12 @@ def create_session(db: Session, session_data: WorkoutSession):
         db.commit()
         db.refresh(db_session)
         logger.info(f"Session {session_data.session_id} created successfully")
-        return {"message": f"{session_data.session_id} Session stored successfully", "created": False}
+        return {"message": f"{session_data.session_id} Session stored successfully", "created": True}
 
     except IntegrityError:
         db.rollback()
         logger.warning(f"Duplicate session {session_data.session_id} attempted")
-        return {"message": f"{session_data.session_id} Session already exists", "created": True}
+        return {"message": f"{session_data.session_id} Session already exists", "created": False}
 
     except SQLAlchemyError as e:
         db.rollback()
