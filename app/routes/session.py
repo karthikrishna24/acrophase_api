@@ -16,9 +16,9 @@ def create_workout_session(session: WorkoutSession, response: Response, db: Sess
     result = create_session(db, session)
 
     if result["created"]:
-        response.status_code = status.HTTP_200_OK
-    else:
         response.status_code = status.HTTP_201_CREATED
+    else:
+        response.status_code = status.HTTP_200_OK
 
     return result
 

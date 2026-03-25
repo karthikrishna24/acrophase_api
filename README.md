@@ -53,7 +53,7 @@ Store a workout session (idempotent).
 ```json
 {
   "message": "177442450245 Session stored successfully",
-  "status": "created"
+  "created": true
 }
 ```
 
