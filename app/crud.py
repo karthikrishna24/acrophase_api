@@ -3,11 +3,12 @@ from app.schemas import WorkoutSession
 import logging
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def create_session(db: Session, session_data: WorkoutSession):
+def create_session(db: Session, session_data: WorkoutSession) -> dict[str, Any]:
     """
     Create a workout session (idempotent)
     """
@@ -43,7 +44,7 @@ def create_session(db: Session, session_data: WorkoutSession):
         return {"message": "Database error occurred", "created": False}
 
 
-def get_sessions_by_user(db: Session, user_id: int, limit: int, offset: int):
+def get_sessions_by_user(db: Session, user_id: int, limit: int, offset: int) -> list[WorkoutSessionDB]:
     """
     Fetch sessions for a user with pagination
     """

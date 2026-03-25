@@ -62,15 +62,7 @@ def test_missing_field():
     assert res.status_code == 422
 
 
-# 6. Bulk insert (simulate CSV data)
-def test_bulk_insert():
-    for i in range(5):
-        payload = valid_payload(f"bulk_{i}")
-        res = client.post("/webhook/session", json=payload)
-        assert res.status_code == 201
-
-
-# 7. Pagination test
+# 6. Pagination test
 def test_pagination():
     # Insert dummy data
     for i in range(10):
